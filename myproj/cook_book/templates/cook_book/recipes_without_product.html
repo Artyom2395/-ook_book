@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Рецепты без Продукта</title>
+    
+</head>
+<body>
+    <h1>Рецепты без указанного продукта или с его содержанием < 10 грамм</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+        </tr>
+        {% for recipe in recipes %}
+        <tr>
+            <td>{{ recipe.id }}</td>
+            <td>{{ recipe.name }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
