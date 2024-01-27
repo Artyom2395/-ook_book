@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import Q
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Product, Recipe, RecipeProduct
@@ -101,9 +102,15 @@ def show_recipes_without_product(request):
     product_id = request.GET.get('product_id')
     
     # Получаем все рецепты, где продукт отсутствует или его вес меньше 10 грамм
-    recipes = Recipe.objects.exclude(
+    recipes_without_product = Recipe.objects.exclude(recipeproduct__product_id=product_id)
+    
+    # Получаем рецепты, где продукт есть, но его вес меньше 10 грамм
+    recipes_with_product_below_10g = Recipe.objects.filter(
         recipeproduct__product_id=product_id,
-        recipeproduct__weight__gte=10
+        recipeproduct__weight__lt=10
     )
+    
+    # Объединяем результаты двух запросов
+    recipes = recipes_without_product.union(recipes_with_product_below_10g)
 
     return render(request, 'cook_book/recipes_without_product.html', {'recipes': recipes})
